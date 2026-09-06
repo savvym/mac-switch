@@ -1,0 +1,8 @@
+.DS_Store
+*.app/
+*.zip
+.build/
+DerivedData/
+work/
+addresses.json
+*.xcuserstate
