@@ -6,3 +6,8 @@ DerivedData/
 work/
 addresses.json
 *.xcuserstate
+dist/
+.venv/
+__pycache__/
+*.pyc
+*.dmg

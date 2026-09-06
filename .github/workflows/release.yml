@@ -1,0 +1,77 @@
+name: Build and Release DMG
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dmg-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+jobs:
+  build:
+    name: Test and Build Universal DMG
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: scripts/requirements-dmg.txt
+      - name: Install DMG dependencies
+        run: python -m pip install -r scripts/requirements-dmg.txt
+      - name: Validate release rules
+        run: python -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Build, test and verify DMG
+        env:
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+        run: python scripts/package_dmg.py --tag "$RELEASE_TAG"
+      - name: Upload installable artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: mac-switch-dmg
+          path: |
+            dist/*.dmg
+            dist/*.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: mac-switch-dmg
+          path: release
+      - name: Verify artifact checksum
+        working-directory: release
+        run: sha256sum --check *.sha256
+      - name: Publish tag release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" \
+            --verify-tag \
+            --title "MAC Switch ${RELEASE_TAG#v}" \
+            --generate-notes \
+            --notes "macOS 13+，同时支持 Apple Silicon 和 Intel。打开 DMG 后，将 MAC Switch 拖入 Applications 安装。本版本使用临时签名，未经过 Apple Developer ID 签名及公证；首次打开可能被 Gatekeeper 提示或拦截，请仅在确认来源可信后按 macOS 安全提示操作。升级不会删除本机地址列表。" \
+            release/*.dmg release/*.sha256
