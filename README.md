@@ -1,6 +1,14 @@
-# MAC Switch
+<p align="center">
+  <img src="docs/assets/logo.png" width="96" height="96" alt="MAC Switch Logo">
+</p>
+
+<h1 align="center">MAC Switch</h1>
 
 面向个人使用的原生 macOS MAC 地址修改小工具。无需 Homebrew、Ruby 或 macchanger。
+
+## 软件截图
+
+<img src="docs/assets/screenshot.png" width="1000" alt="MAC Switch 主界面：网卡选择、自定义 MAC 地址和每设备独立地址列表">
 
 ## 下载安装
 
