@@ -4,19 +4,19 @@
 
 <h1 align="center">MAC Switch</h1>
 
-面向个人使用的原生 macOS MAC 地址修改小工具。无需 Homebrew、Ruby 或 macchanger。
+<p align="center">原生 macOS MAC 地址修改工具。</p>
 
-## 软件截图
-
-<img src="docs/assets/screenshot.png" width="1000" alt="MAC Switch 主界面：网卡选择、自定义 MAC 地址和每设备独立地址列表">
+<p align="center">
+  <img src="docs/assets/screenshot.png" width="1000" alt="MAC Switch 主界面：网卡选择、自定义 MAC 地址和每设备独立地址列表">
+</p>
 
 ## 下载安装
 
-从 [GitHub Releases](https://github.com/savvym/mac-switch/releases) 下载 `MAC-Switch-版本号-universal.dmg`。打开后将左侧的 **MAC Switch** 拖入右侧的 **Applications**，然后从“应用程序”启动。不要直接在只读 DMG 中运行。
+从 [GitHub Releases](https://github.com/savvym/mac-switch/releases) 下载 DMG，打开后将 **MAC Switch** 拖入 **Applications**。
 
-发行包同时包含 Apple Silicon 和 Intel 架构，要求 macOS 13 或更高版本。安装不会删除已有地址列表。
+支持 macOS 13 及以上版本，兼容 Apple Silicon 和 Intel。
 
-**当前发行包未经过 Apple Developer ID 签名和公证。** 首次运行可能被 macOS Gatekeeper 提示或拦截；确认下载来源可信后，按“系统设置 → 隐私与安全性”中的提示处理。请不要关闭全局安全保护。发布页同时提供 SHA-256 校验文件。
+> 当前发行包尚未进行 Developer ID 签名及公证，首次打开可能出现 macOS 安全提示。
 
 ## 使用
 
